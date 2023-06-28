@@ -278,6 +278,10 @@ void processDocRequest( int fd ) {
       strcpy(contentType, "image/svg+xml");
     } else if (endsWith(expanded, ".css")) {
       strcpy(contentType, "text/css");
+    } else if (endsWith(expanded, ".png")) {
+      strcpy(contentType, "image/png");
+    } else if (endsWith(expanded, ".jpeg") || endsWith(expanded, ".jpg")) {
+      strcpy(contentType, "image/jpeg");
     } else {
       strcpy(contentType, "text/plain");
     }
