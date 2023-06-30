@@ -159,10 +159,6 @@ void processDocRequest( int fd ) {
   int n;
   char path[MaxWord + 1];
 
-  // Send prompt: from daytime
-  //const char * prompt = "\nType your name:";
-  //write( fd, prompt, strlen( prompt ) );
-
   // Currently character read
   unsigned char newChar;
 
@@ -265,8 +261,8 @@ void processDocRequest( int fd ) {
     printf("actual: %s\n", pass);
     write(fd, "HTTP/1.1 401 Unauthorized\r\n", 27);
     printf("HTTP/1.1 401 Unauthorized\r\n");
-    write(fd, "WWW-Authenticate: Basic realm=great_cs252_realm\r\n\r\n", 51);
-    printf("WWW-Authenticate: Basic realm=great_cs252_realm\r\n\r\n");
+    write(fd, "WWW-Authenticate: Basic realm=hiatt_realm\r\n\r\n", 51);
+    printf("WWW-Authenticate: Basic realm=hiatt_realm\r\n\r\n");
   } else {
     //5. determine content type
     char contentType[16];
@@ -298,8 +294,8 @@ void processDocRequest( int fd ) {
     } else { //7. send HTTP reply header
       write(fd, "HTTP/1.1 200 Document follows\r\n", 31);
       printf("HTTP/1.1 200 Document follows\r\n");
-      write(fd, "Server: CS 252 lab5\r\n", 21);
-      printf("Server: CS 252 lab5\r\n");
+      write(fd, "Server: hiatt\r\n", 15);
+      printf("Server: hiatt\r\n");
       write(fd, "Content-type: ", 14);
       printf("Content-type: ");
       write(fd, contentType, strlen(contentType));
