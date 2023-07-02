@@ -116,6 +116,7 @@ int main(int argc, char ** argv) {
         exit(-1);
       }
       if (!flags) {
+        printf("New process\n");
         processDocRequest( slaveSocket ); //process request
         close( slaveSocket ); //close socket
       }
@@ -179,16 +180,13 @@ void processDocRequest( int fd ) {
   char curr_pass[256];
   curr_pass[0] = '\0';
   int check = 0;
-  //explicit_bzero(curr_pass, 256);
 
   while ((n = read(fd, &newChar, sizeof(newChar))) > 0 ) {
 
     if ( newChar == ' ' ) {
-      //printf("%c", newChar);
-      //request has spaces in a bunch of spots, particularly after the get
       if (strncmp("GET", word, 3) == 0) {
         get = true; //GET found
-        memset(word, 0, MaxWord); //same as memset but skips having to tell it to put in /0's
+        memset(word, 0, MaxWord);
         length = 0;
       } else if (strncmp("Basic", word, 5) == 0 && auth) {
         basic = true;
@@ -209,7 +207,6 @@ void processDocRequest( int fd ) {
       }
     } else if(newChar == '\n' && lastChar == '\r') { //end of important stuff
       if (basic) {
-        printf("in basic\n");
         if (strlen(curr_pass) == 0) {
           strncpy(curr_pass, word, strlen(pass));
           psw = true;
@@ -240,12 +237,15 @@ void processDocRequest( int fd ) {
 
   char cwd[256];
   getcwd(cwd, 256);
+  printf("cwd: %s\n", cwd);
   char expanded[MaxWord + 1];
-  if (strncmp("/icons", path, sizeof("/icons")) == 0) {
+  if (strncmp("/htdocs", path, sizeof("/htdocs")) == 0) {
     sprintf(expanded, "%s/http-root-dir/%s", cwd, path);
-  } else if(strncmp("/htdocs", path, sizeof("/htdocs")) == 0) {
+  } else if (strncmp("/styles", path, sizeof("/styles")) == 0) {
+    printf("STYLES\n");
     sprintf(expanded, "%s/http-root-dir/%s", cwd, path);
   } else {
+    printf("ELSE\n");
     sprintf(expanded, "%s/http-root-dir/htdocs%s", cwd, path);
   }
 
@@ -306,14 +306,15 @@ void processDocRequest( int fd ) {
       char content[1048576]; //1048576
       int sentry;
       while(sentry = read(newfd, content, 1048576)) {
-        printf("Content: %s\n", content);
+        printf("Content: \n%s\n", content);
         if (write(fd, content, sentry) != sentry) {
           perror("write");
-          memset(content, 0, 1048576); //same as memset but don't have to specify the 0's
+          memset(content, 0, 1048576);
           break;
         }
       }
-    }
+          memset(content, 0, 1048576);
+    } 
     close(newfd);
   }
 }
